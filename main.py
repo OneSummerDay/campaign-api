@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 from fastapi import FastAPI, HTTPException, Request
 
 
@@ -34,8 +35,7 @@ async def read_campaign(id: int):
 
 
 @app.post("/campaign")
-async def create_campaign(request: Request):
-    body = await request.json()
+async def create_campaign(body: dict[str, Any]):
 
     new_campaign = {
         "campaing_id": len(data) + 1,
