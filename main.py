@@ -29,7 +29,7 @@ async def read_campaigns():
 async def read_campaign(id: int):
     for campaign in data:
         if campaign.get("campaign_id") == id:
-            return {"message": id}
+            return {"message": campaign}
     raise HTTPException(status_code=404, detail="Campaign not found")
         
     
