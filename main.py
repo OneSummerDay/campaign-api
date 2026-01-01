@@ -27,4 +27,6 @@ async def read_campaigns():
 
 @app.get("/campaigns/{id}")
 async def read_campaign(id: int):
-    return {"message": id}
+    for campaign in data:
+        if campaign.get("campaign_id") == id:
+            return {"message": id}
