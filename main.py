@@ -25,4 +25,6 @@ async def read_campaigns():
     return {"message": data}
 
 
-
+@app.get("/campaigns/{id}")
+async def read_campaign(id: int):
+    return {"message": id}
