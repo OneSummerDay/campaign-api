@@ -34,7 +34,7 @@ async def read_campaign(id: int):
     raise HTTPException(status_code=404, detail="Campaign not found")
 
 
-@app.post("/campaign")
+@app.post("/campaigns")
 async def create_campaign(body: dict[str, Any]):
 
     new_campaign = {
@@ -48,11 +48,11 @@ async def create_campaign(body: dict[str, Any]):
     return {"message": new_campaign}
 
 
-@app.put("/campaign/{id}")
+@app.put("/campaigns/{id}")
 async def update_campaign(id: int, body: dict[str, Any]):
     for index, campaign in enumerate(data):
         if campaign.get("campaing_id") == id:
-            
+
             update_campaign = {
                 "campaing_id": id,
                 "name": body.get("name"),
@@ -62,4 +62,13 @@ async def update_campaign(id: int, body: dict[str, Any]):
 
             data[index] = update_campaign
             return {"message": update_campaign}
+    raise HTTPException(status_code=404, detail="Campaign not found")
+
+
+@app.delete("/campaigns/{id}")
+async def delete_campaign(id: int):
+    for index, campaign in enumerate(data):
+        if campaign.get("campaing_id") == id:
+            data.pop(index)
+            return {"message": "Campaign deleted successfully"}
     raise HTTPException(status_code=404, detail="Campaign not found")
