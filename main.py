@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 
 app = FastAPI(root_path="/api/v1")
@@ -30,3 +30,6 @@ async def read_campaign(id: int):
     for campaign in data:
         if campaign.get("campaign_id") == id:
             return {"message": id}
+    raise HTTPException(status_code=404, detail="Campaign not found")
+        
+    
