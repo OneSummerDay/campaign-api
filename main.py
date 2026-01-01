@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 
 
 app = FastAPI(root_path="/api/v1")
@@ -31,5 +31,19 @@ async def read_campaign(id: int):
         if campaign.get("campaign_id") == id:
             return {"message": campaign}
     raise HTTPException(status_code=404, detail="Campaign not found")
-        
+
+
+@app.post("/campaign")
+async def create_campaign(request: Request):
+    body = await request.json()
+
+    new_campaign = {
+        "campaing_id": len(data) + 1,
+        "name": body.get("name"),
+        "due_date": datetime.now(),
+        "created_at": datetime.now(),
+    }
+
+    data.append(new_campaign)
+    return {"message": new_campaign}
     
