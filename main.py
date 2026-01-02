@@ -32,8 +32,13 @@ SessionDependency = Annotated[Session, Depends(get_session)]
 async def lifespan(app: FastAPI):
     create_db_and_tables()
     with Session(engine) as session:
-        if not session.exec(select()):
-            pass
+        if not session.exec(select(Campaign)).first():
+            session.add_all([
+                Campaign(name="Campaign 1", due_date=datetime.now()),
+                Campaign(name="Campaign 2", due_date=datetime.now()),
+            ])
+            session.commit()
+            
     yield
 
 
