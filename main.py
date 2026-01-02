@@ -2,8 +2,14 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Annotated, Any
 from fastapi import Depends, FastAPI, HTTPException
-from sqlmodel import SQLModel, Session, create_engine
+from sqlmodel import Field, SQLModel, Session, create_engine, select
 
+
+class Campaign(SQLModel, table=True):
+    campaing_id: int | None = Field(default=None, primary_key=True)
+    name: str = Field(index=True)
+    due_date: datetime | None = Field(default=None, index=True)
+    created_at: datetime = Field(default_factory=datetime.now, index=True)
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
@@ -25,6 +31,9 @@ SessionDependency = Annotated[Session, Depends(get_session)]
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
+    with Session(engine) as session:
+        if not session.exec(select()):
+            pass
     yield
 
 
