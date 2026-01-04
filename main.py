@@ -99,10 +99,12 @@ async def update_campaign(id: int, campaign: CampaignCreate, session: SessionDep
     return {"campaign": data}
 
 
-@app.delete("/campaigns/{id}")
-async def delete_campaign(id: int):
-    for index, campaign in enumerate(data):
-        if campaign.get("campaing_id") == id:
-            data.pop(index)
-            return {"message": "Campaign deleted successfully"}
-    raise HTTPException(status_code=404, detail="Campaign not found")
+@app.delete("/campaigns/{id}", status_code=204)
+async def delete_campaign(id: int, session: SessionDependency):
+    data = session.get(Campaign, id)
+    if not data:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    session.delete(data)
+    session.commit()
+    
+   
