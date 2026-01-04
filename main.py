@@ -67,11 +67,11 @@ async def read_campaigns(session: SessionDependency):
 
 
 @app.get("/campaigns/{id}")
-async def read_campaign(id: int):
-    for campaign in data:
-        if campaign.get("campaign_id") == id:
-            return {"message": campaign}
-    raise HTTPException(status_code=404, detail="Campaign not found")
+async def read_campaign(id: int, session: SessionDependency):
+    data = session.get(Campaign, id)
+    if not data:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    return {"campaign": data}
 
 
 @app.post("/campaigns")
