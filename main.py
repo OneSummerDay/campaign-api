@@ -74,18 +74,12 @@ async def read_campaign(id: int, session: SessionDependency):
     return {"campaign": data}
 
 
-@app.post("/campaigns")
-async def create_campaign(body: dict[str, Any]):
-
-    new_campaign = {
-        "campaing_id": len(data) + 1,
-        "name": body.get("name"),
-        "due_date": datetime.now(),
-        "created_at": datetime.now(),
-    }
-
-    data.append(new_campaign)
-    return {"message": new_campaign}
+@app.post("/campaigns", status_code=201)
+async def create_campaign(campaign: Campaign, session: SessionDependency):
+    session.add(campaign)
+    session.commit()
+    session.refresh(campaign)
+    return {"message": campaign}
 
 
 @app.put("/campaigns/{id}")
