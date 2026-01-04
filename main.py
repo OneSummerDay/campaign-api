@@ -11,6 +11,10 @@ class Campaign(SQLModel, table=True):
     due_date: datetime | None = Field(default=None, index=True)
     created_at: datetime = Field(default_factory=datetime.now, index=True)
 
+class CampaignCreate(SQLModel):
+    name: str
+    due_date: datetime | None = None    
+
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 
@@ -75,7 +79,7 @@ async def read_campaign(id: int, session: SessionDependency):
 
 
 @app.post("/campaigns", status_code=201)
-async def create_campaign(campaign: Campaign, session: SessionDependency):
+async def create_campaign(campaign: CampaignCreate, session: SessionDependency):
     session.add(campaign)
     session.commit()
     session.refresh(campaign)
