@@ -61,8 +61,9 @@ data = [
 
 
 @app.get("/campaigns")
-async def read_campaigns():
-    return {"message": data}
+async def read_campaigns(session: SessionDependency):
+    data = session.exec(select(Campaign)).all()
+    return {"campaigns": data}
 
 
 @app.get("/campaigns/{id}")
