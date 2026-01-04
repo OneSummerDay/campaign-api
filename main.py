@@ -80,11 +80,11 @@ async def read_campaign(id: int, session: SessionDependency):
 
 @app.post("/campaigns", status_code=201)
 async def create_campaign(campaign: CampaignCreate, session: SessionDependency):
-    session.add(campaign)
+    db_campaign = Campaign.model_validate(campaign)
+    session.add(db_campaign)
     session.commit()
-    session.refresh(campaign)
-    return {"message": campaign}
-
+    session.refresh(db_campaign)
+    return {"message": db_campaign}
 
 @app.put("/campaigns/{id}")
 async def update_campaign(id: int, body: dict[str, Any]):
