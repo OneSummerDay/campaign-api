@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from datetime import datetime
-from typing import Annotated, Any
+from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException
 from sqlmodel import Field, SQLModel, Session, create_engine, select
 
@@ -48,22 +48,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(root_path="/api/v1", lifespan=lifespan)
 
-data = [
-    {
-        "campaing_id": 1,
-        "name": "Campaign 1",
-        "due_date": datetime.now(),
-        "created_at": datetime.now(),
-    },
-    {
-        "campaing_id": 2,
-        "name": "Campaign 2",
-        "due_date": datetime.now(),
-        "created_at": datetime.now(),
-    },
-]
-
-
 @app.get("/campaigns")
 async def read_campaigns(session: SessionDependency):
     data = session.exec(select(Campaign)).all()
@@ -85,6 +69,7 @@ async def create_campaign(campaign: CampaignCreate, session: SessionDependency):
     session.commit()
     session.refresh(db_campaign)
     return {"message": db_campaign}
+
 
 @app.put("/campaigns/{id}")
 async def update_campaign(id: int, campaign: CampaignCreate, session: SessionDependency):
