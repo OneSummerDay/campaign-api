@@ -87,20 +87,16 @@ async def create_campaign(campaign: CampaignCreate, session: SessionDependency):
     return {"message": db_campaign}
 
 @app.put("/campaigns/{id}")
-async def update_campaign(id: int, body: dict[str, Any]):
-    for index, campaign in enumerate(data):
-        if campaign.get("campaing_id") == id:
-
-            update_campaign = {
-                "campaing_id": id,
-                "name": body.get("name"),
-                "due_date": datetime.now(),
-                "created_at": campaign.get("created_at"),
-            }
-
-            data[index] = update_campaign
-            return {"message": update_campaign}
-    raise HTTPException(status_code=404, detail="Campaign not found")
+async def update_campaign(id: int, campaign: CampaignCreate, session: SessionDependency):
+    data = session.get(Campaign, id)
+    if not data:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    data.name = campaign.name
+    data.due_date = campaign.due_date
+    session.add(data)
+    session.commit()
+    session.refresh(data)
+    return {"campaign": data}
 
 
 @app.delete("/campaigns/{id}")
